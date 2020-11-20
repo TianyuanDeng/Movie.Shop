@@ -56,6 +56,24 @@ namespace MovieShop.Infrastructure.Data
                 .HasForeignKey(mc => mc.CrewId);
 
             modelBuilder.Entity<User>(ConfigureUser);
+            modelBuilder.Entity<Review>(ConfigureReview);
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Movie)
+                .WithMany(m => m.Reviews)
+                .HasForeignKey(r => r.MovieId);
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.UserId);
+
+        }
+
+        private void ConfigureReview(EntityTypeBuilder<Review> builder)
+        {
+            builder.ToTable("Review");
+            builder.HasKey(r => new { r.MovieId, r.UserId });
+            builder.Property(r => r.Rating).IsRequired().HasColumnType("decimal(5, 2)");
+            builder.Property(r => r.ReviewText);
         }
 
         private void ConfigureUser(EntityTypeBuilder<User> builder)
@@ -69,6 +87,7 @@ namespace MovieShop.Infrastructure.Data
             builder.Property(u => u.HashedPassword).HasMaxLength(1024);
             builder.Property(u => u.Salt).HasMaxLength(1024);
             builder.Property(u => u.PhoneNumber).HasMaxLength(16);
+            //bit --> boolean
             builder.Property(u => u.TwoFactorEnabled).HasDefaultValue(true);
             builder.Property(u => u.LockoutEndDate).HasDefaultValueSql("getdate()");
             builder.Property(u => u.LastLoginDateTime).HasDefaultValueSql("getdate()");
@@ -150,6 +169,7 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<MovieCast> MovieCasts { get; set; }
         public DbSet<Crew> Crews { get; set; }
         public DbSet<MovieCrew> MovieCrews { get; set; }
+        public DbSet<Review> Reviews  { get; set; }
     }
 
     

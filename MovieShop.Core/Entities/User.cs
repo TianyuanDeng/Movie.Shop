@@ -19,5 +19,7 @@ namespace MovieShop.Core.Entities
         public DateTime? LastLoginDateTime { get; set; }
         public Boolean IsLocked { get; set; }
         public int AccessFailedCount { get; set; }
+
+        public ICollection<Review> Reviews { get; set; }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieShop.Infrastructure.Data;
 
 namespace MovieShop.Infrastructure.Migrations
 {
     [DbContext(typeof(MovieShopDbContext))]
-    partial class MovieShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201120021332_CastsTable")]
+    partial class CastsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,33 +46,6 @@ namespace MovieShop.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cast");
-                });
-
-            modelBuilder.Entity("MovieShop.Core.Entities.Crew", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Gender")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("ProfilePath")
-                        .HasMaxLength(2084)
-                        .HasColumnType("nvarchar(2084)");
-
-                    b.Property<string>("TmdbUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Crew");
                 });
 
             modelBuilder.Entity("MovieShop.Core.Entities.Genre", b =>
@@ -165,26 +140,6 @@ namespace MovieShop.Infrastructure.Migrations
                     b.ToTable("Movie");
                 });
 
-            modelBuilder.Entity("MovieShop.Core.Entities.MovieCast", b =>
-                {
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CastId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Character")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("MovieId", "CastId");
-
-                    b.HasIndex("CastId");
-
-                    b.ToTable("MovieCast");
-                });
-
             modelBuilder.Entity("MovieShop.Core.Entities.MovieGenre", b =>
                 {
                     b.Property<int>("MovieId")
@@ -225,25 +180,6 @@ namespace MovieShop.Infrastructure.Migrations
                     b.ToTable("Trailer");
                 });
 
-            modelBuilder.Entity("MovieShop.Core.Entities.MovieCast", b =>
-                {
-                    b.HasOne("MovieShop.Core.Entities.Cast", "Cast")
-                        .WithMany("MovieCasts")
-                        .HasForeignKey("CastId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieShop.Core.Entities.Movie", "Movie")
-                        .WithMany("MovieCasts")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cast");
-
-                    b.Navigation("Movie");
-                });
-
             modelBuilder.Entity("MovieShop.Core.Entities.MovieGenre", b =>
                 {
                     b.HasOne("MovieShop.Core.Entities.Genre", "Genre")
@@ -274,11 +210,6 @@ namespace MovieShop.Infrastructure.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("MovieShop.Core.Entities.Cast", b =>
-                {
-                    b.Navigation("MovieCasts");
-                });
-
             modelBuilder.Entity("MovieShop.Core.Entities.Genre", b =>
                 {
                     b.Navigation("MovieGenres");
@@ -286,8 +217,6 @@ namespace MovieShop.Infrastructure.Migrations
 
             modelBuilder.Entity("MovieShop.Core.Entities.Movie", b =>
                 {
-                    b.Navigation("MovieCasts");
-
                     b.Navigation("MovieGenres");
 
                     b.Navigation("Trailers");

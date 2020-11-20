@@ -45,6 +45,41 @@ namespace MovieShop.Infrastructure.Data
                 .HasForeignKey(mc => mc.CastId);
 
             modelBuilder.Entity<Crew>(ConfigureCrew);
+            modelBuilder.Entity<MovieCrew>(ConfigureMovieCrew);
+            modelBuilder.Entity<MovieCrew>()
+                .HasOne(mcr => mcr.Movie)
+                .WithMany(m => m.MovieCrews)
+                .HasForeignKey(mcr => mcr.MovieId);
+            modelBuilder.Entity<MovieCrew>()
+                .HasOne(mcr => mcr.Crew)
+                .WithMany(c => c.MovieCrews)
+                .HasForeignKey(mc => mc.CrewId);
+
+            modelBuilder.Entity<User>(ConfigureUser);
+        }
+
+        private void ConfigureUser(EntityTypeBuilder<User> builder)
+        {
+            builder.ToTable("User");
+            builder.HasKey(u => u.Id);
+            builder.Property(u => u.FirstName).HasMaxLength(128);
+            builder.Property(u => u.LastName).HasMaxLength(128);
+            builder.Property(u => u.DateOfBirth).HasDefaultValueSql("getdate()");
+            builder.Property(u => u.Email).HasMaxLength(256);
+            builder.Property(u => u.HashedPassword).HasMaxLength(1024);
+            builder.Property(u => u.Salt).HasMaxLength(1024);
+            builder.Property(u => u.PhoneNumber).HasMaxLength(16);
+            builder.Property(u => u.TwoFactorEnabled).HasDefaultValue(true);
+            builder.Property(u => u.LockoutEndDate).HasDefaultValueSql("getdate()");
+            builder.Property(u => u.LastLoginDateTime).HasDefaultValueSql("getdate()");
+            builder.Property(u => u.IsLocked).HasDefaultValue(true);
+            builder.Property(u => u.AccessFailedCount).HasDefaultValue(0);
+        }
+
+        private void ConfigureMovieCrew(EntityTypeBuilder<MovieCrew> builder)
+        {
+            builder.ToTable("MovieCrew");
+            builder.HasKey(mcr => new { mcr.MovieId, mcr.CrewId, mcr.Department, mcr.Job });
         }
 
         private void ConfigureCrew(EntityTypeBuilder<Crew> builder)
@@ -114,6 +149,7 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<Cast> Casts { get; set; }
         public DbSet<MovieCast> MovieCasts { get; set; }
         public DbSet<Crew> Crews { get; set; }
+        public DbSet<MovieCrew> MovieCrews { get; set; }
     }
 
     

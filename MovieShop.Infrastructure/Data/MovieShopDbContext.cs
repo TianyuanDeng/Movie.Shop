@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MovieShop.Core.Entities;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieShop.Infrastructure.Data
 {
@@ -65,6 +66,20 @@ namespace MovieShop.Infrastructure.Data
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(r => r.UserId);
+
+            modelBuilder.Entity<Purchase>(ConfigurePurchase);
+
+        }
+
+        private void ConfigurePurchase(EntityTypeBuilder<Purchase> builder)
+        {
+            builder.ToTable("Purchase");
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.UserId);
+            builder.Property(p => p.PurchaseNumber).HasDefaultValueSql("NEWID()");
+            builder.Property(p => p.TotalPrice).IsRequired().HasColumnType("decimal(18, 2)");
+            builder.Property(p => p.PurchaseDateTime).HasDefaultValueSql("getdate()");
+            builder.Property(P => P.MovieId);
 
         }
 
@@ -170,6 +185,8 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<Crew> Crews { get; set; }
         public DbSet<MovieCrew> MovieCrews { get; set; }
         public DbSet<Review> Reviews  { get; set; }
+
+        public DbSet<Purchase> Purchases { get; set; }
     }
 
     

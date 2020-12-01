@@ -5,6 +5,8 @@ using System.Text;
 using MovieShop.Infrastructure.Data;
 using MovieShop.Core.RepositoryInterfaces;
 using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace MovieShop.Infrastructure.Repositories
 {
@@ -13,6 +15,7 @@ namespace MovieShop.Infrastructure.Repositories
         public MovieRepository(MovieShopDbContext dbContext) : base(dbContext)
         {
         }
+
         public async Task<IEnumerable<Movie>> GetTopRatedMovies()
         {
             throw new NotImplementedException();
@@ -23,7 +26,10 @@ namespace MovieShop.Infrastructure.Repositories
         }
         public async Task<IEnumerable<Movie>> GetHighestRevenueMovies()
         {
-            throw new NotImplementedException();
+            var movies = await _dbContext.Movies.OrderByDescending(m => m.Revenue).Take(50).ToListAsync();
+            //skip and take need to know 
+            //offset 10 and fetch 50 next rows
+            return movies;
         }
     }
 }

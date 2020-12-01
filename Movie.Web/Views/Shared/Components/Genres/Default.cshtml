@@ -1,0 +1,8 @@
+﻿@model IEnumerable<MovieShop.Core.Entities.Genre>
+
+@foreach (var genre in Model)
+{
+    <a>
+        @genre.Name
+    </a>
+}

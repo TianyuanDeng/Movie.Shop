@@ -7,6 +7,7 @@ using MovieShop.Core.RepositoryInterfaces;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using MovieShop.Core.Models.Response;
 
 namespace MovieShop.Infrastructure.Repositories
 {
@@ -16,10 +17,26 @@ namespace MovieShop.Infrastructure.Repositories
         {
         }
 
-        public async Task<IEnumerable<Movie>> GetTopRatedMovies()
+        public async Task<IEnumerable<MovieResponseModel>> GetTopRatedMovies()
         {
-            throw new NotImplementedException();
+            var reviews = await _dbContext.Reviews.OrderByDescending(r => r.Rating).Take(20).ToListAsync();
+            var movies = new List<MovieResponseModel>();
+            foreach (var review in reviews)
+            {
+                var m = GetMovieById(review.MovieId);
+
+                movies.Add(new MovieResponseModel
+                {
+                    //Id = m.Id,
+                    //PosterUrl = m.posterUrl,
+                    //ReleaseDate = m.ReleaseDate.Value,
+                    //Title = m.Title
+                });
+            }
+
+            return movies;
         }
+
         public async Task<IEnumerable<Movie>> GetMoviesByGenre(int genreId)
         {
             throw new NotImplementedException();
@@ -30,6 +47,11 @@ namespace MovieShop.Infrastructure.Repositories
             //skip and take need to know 
             //offset 10 and fetch 50 next rows
             return movies;
+        }
+
+        public async Task<Movie> GetMovieById(int id)
+        {
+            return await _dbContext.Movies.FindAsync(id);
         }
     }
 }

@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MovieShop.Core.ServiceInterfaces
+namespace MovieShop.Core.RepositoryInterfaces
 {
-    public interface ICastService
+    public interface ICastRepository
     {
-        //Task<CastDetailsResponseModel> GetCastDetailsWithMovies(int id);
         Task<Cast> GetCastById(int id);
     }
 }

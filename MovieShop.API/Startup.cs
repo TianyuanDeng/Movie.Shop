@@ -1,23 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using MovieShop.Core.Entities;
 using MovieShop.Core.RepositoryInterfaces;
 using MovieShop.Core.ServiceInterfaces;
 using MovieShop.Infrastructure.Data;
 using MovieShop.Infrastructure.Repositories;
 using MovieShop.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Movie.Web
+namespace MovieShop.API
 {
     public class Startup
     {
@@ -31,21 +33,19 @@ namespace Movie.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
 
-            //.NET Core has built-in IOC support
-            //.Net Framework did not had Built-in IOC.. We had to use 3rd party IOC, NINJECT, Autofac
+            services.AddControllers();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MovieShop.API", Version = "v1" });
+            });
+
             services.AddDbContext<MovieShopDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString(("MovieShopDbConnection"))));
 
-            //Registering our DI services... Binding Services to interfaces
-            //Also Repository
             services.AddScoped<IMovieService, MovieService>();
             services.AddScoped<IMovieRepository, MovieRepository>();
 
-            services.AddScoped<IGenreService, GenreService>();
-            services.AddScoped<IAsyncRepository<Genre>, EfRepository<Genre>>();
-           
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICryptoService, CryptoService>();
@@ -53,8 +53,9 @@ namespace Movie.Web
             services.AddScoped<ICastRepository, CastRepository>();
             services.AddScoped<ICastService, CastService>();
 
+            services.AddScoped<IGenreService, GenreService>();
+            services.AddScoped<IAsyncRepository<Genre>, EfRepository<Genre>>();
 
-            //sets the default authentication scheme for the app
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
                 options.Cookie.Name = "MovieShopAuthCookie";
@@ -69,15 +70,9 @@ namespace Movie.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MovieShop.API v1"));
             }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -85,9 +80,7 @@ namespace Movie.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
     }

@@ -1,4 +1,5 @@
-﻿using MovieShop.Core.Models.Response;
+﻿using MovieShop.Core.Entities;
+using MovieShop.Core.Models.Response;
 using MovieShop.Core.RepositoryInterfaces;
 using MovieShop.Core.ServiceInterfaces;
 using MovieShop.Infrastructure.Data;
@@ -26,6 +27,7 @@ namespace MovieShop.Infrastructure.Services
             _repository = repository;
         }
 
+
         public async Task<IEnumerable<MovieResponseModel>> GetTopRevenueMovies()
         {
             var movies = await _repository.GetHighestRevenueMovies();
@@ -45,6 +47,27 @@ namespace MovieShop.Infrastructure.Services
             }
 
             return movieResponseModel;
+        }
+
+        public async Task<MovieResponseModel> GetMoveById(int id)
+        {
+            var movie = await _repository.GetMovieById(id);
+            var model = new MovieResponseModel
+            {
+                Id = movie.Id,
+                PosterUrl = movie.PosterUrl,
+                ReleaseDate = movie.ReleaseDate.Value,
+                Title = movie.Title
+            };
+
+            return model; 
+        }
+
+        public async Task<IEnumerable<MovieResponseModel>> GetTopRatedMovies()
+        {
+            var movies = await _repository.GetTopRatedMovies();
+
+            return movies;
         }
     }
 }

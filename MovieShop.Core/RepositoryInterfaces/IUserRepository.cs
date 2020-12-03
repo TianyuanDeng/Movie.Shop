@@ -6,5 +6,6 @@ namespace MovieShop.Core.RepositoryInterfaces
      public interface IUserRepository: IAsyncRepository<User>
     {
         Task<User> GetUserByEmail(string email);
+        Task<User> GetUserById(int id);
     }
 }

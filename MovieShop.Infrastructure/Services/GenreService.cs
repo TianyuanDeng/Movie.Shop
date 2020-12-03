@@ -15,6 +15,7 @@ namespace MovieShop.Infrastructure.Services
         {
             _genreRepository = genreRepository;
         }
+
         public async Task<IEnumerable<Genre>> GetAllGenres()
         {
             return await _genreRepository.ListAllAsync();

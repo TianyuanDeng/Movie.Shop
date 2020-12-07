@@ -19,9 +19,5 @@ namespace MovieShop.Infrastructure.Repositories
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<User> GetUserById(int id)
-        {
-            return await _dbContext.Users.FindAsync(id);
-        }
     }
 }

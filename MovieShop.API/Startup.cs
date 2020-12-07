@@ -56,6 +56,8 @@ namespace MovieShop.API
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IAsyncRepository<Genre>, EfRepository<Genre>>();
 
+            services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
                 options.Cookie.Name = "MovieShopAuthCookie";

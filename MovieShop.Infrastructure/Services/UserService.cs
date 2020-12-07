@@ -14,11 +14,13 @@ namespace MovieShop.Infrastructure.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ICryptoService _cryptoService;
+        private readonly IPurchaseRepository _purchaseRepository;
 
-        public UserService(IUserRepository userRepository, ICryptoService cryptoService)
+        public UserService(IUserRepository userRepository, ICryptoService cryptoService, IPurchaseRepository purchaseRepository)
         {
             _userRepository = userRepository;
             _cryptoService = cryptoService;
+            _purchaseRepository = purchaseRepository;
         }
 
         public async Task<UserLoginResponseModel> ValidateUser(string email, string password)
@@ -38,13 +40,6 @@ namespace MovieShop.Infrastructure.Services
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth
             };
-
-            //var response = _mapper.Map<UserLoginResponseModel>(user);
-            //var userRoles = roles.ToList();
-            //if (userRoles.Any())
-            //{
-            //    response.Roles = userRoles.Select(r => r.Role.Name).ToList();
-            //}
 
             if (isSuccess)
                 return response;
@@ -103,9 +98,19 @@ namespace MovieShop.Infrastructure.Services
             return response;
         }
 
-        public Task PurchaseMovie(PurchaseRequestModel purchaseRequest)
+        public async Task PurchaseMovie(PurchaseRequestModel purchaseRequest)
         {
-            throw new NotImplementedException();
+            var purchased = new Purchase
+            {
+                UserId = purchaseRequest.userId,
+                PurchaseNumber = purchaseRequest.purchaseNumber,
+                TotalPrice = purchaseRequest.totalPrice,
+                PurchaseDateTime = purchaseRequest.purchaseDateTime,
+                MovieId = purchaseRequest.movieId
+            };
+
+            //var createdPurchased = await _purchaseRepository.AddAsync(purchased);
+            //Console.WriteLine("Success add purchased movies");
         }
 
         public Task AddFavorite(FavoriteRequestModel favoriteRequest)

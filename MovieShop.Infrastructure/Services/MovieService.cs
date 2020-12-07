@@ -63,9 +63,29 @@ namespace MovieShop.Infrastructure.Services
             return model; 
         }
 
+        //public override async Task<Movie> GetByIdAsync(int id)
+        //{
+        //    var movie = await _dbContext.Movies
+        //                                .Include(m => m.MovieCasts).ThenInclude(m => m.Cast).Include(m => m.MovieGenres)
+        //                                .ThenInclude(m => m.Genre)
+        //                                .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (movie == null) return null;
+        //    var movieRating = await _dbContext.Reviews.Where(r => r.MovieId == id).DefaultIfEmpty()
+        //                                      .AverageAsync(r => r == null ? 0 : r.Rating);
+        //    if (movieRating > 0) movie.Rating = movieRating;
+        //    return movie;
+        //}
+
         public async Task<IEnumerable<MovieResponseModel>> GetTopRatedMovies()
         {
             var movies = await _repository.GetTopRatedMovies();
+
+            return movies;
+        }
+
+        public async Task<IEnumerable<MovieResponseModel>> GetMoviesByGenre(int genreId)
+        {
+            var movies = await _repository.GetMoviesByGenre(genreId);
 
             return movies;
         }

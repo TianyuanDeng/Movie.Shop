@@ -53,6 +53,7 @@ namespace Movie.Web
             services.AddScoped<ICastRepository, CastRepository>();
             services.AddScoped<ICastService, CastService>();
 
+            services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 
             //sets the default authentication scheme for the app
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>

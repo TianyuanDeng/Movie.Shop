@@ -23,24 +23,40 @@ namespace MovieShop.Infrastructure.Repositories
             var movies = new List<MovieResponseModel>();
             foreach (var review in reviews)
             {
-                var m = GetMovieById(review.MovieId);
+                var movie = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == review.MovieId);
 
                 movies.Add(new MovieResponseModel
                 {
-                    //Id = m.Id,
-                    //PosterUrl = m.posterUrl,
-                    //ReleaseDate = m.ReleaseDate.Value,
-                    //Title = m.Title
+                    Id = movie.Id,
+                    PosterUrl = movie.PosterUrl,
+                    ReleaseDate = movie.ReleaseDate.Value,
+                    Title = movie.Title
                 });
             }
 
             return movies;
         }
 
-        public async Task<IEnumerable<Movie>> GetMoviesByGenre(int genreId)
+        public async Task<IEnumerable<MovieResponseModel>> GetMoviesByGenre(int genreId)
         {
-            throw new NotImplementedException();
+            var genre = _dbContext.MovieGenres.Where(g => g.GenreId == genreId).ToList();
+            var movies = new List<MovieResponseModel>();
+            foreach (var gen in genre)
+            {
+                var movie = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == gen.MovieId);
+
+                movies.Add(new MovieResponseModel
+                {
+                    Id = movie.Id,
+                    PosterUrl = movie.PosterUrl,
+                    ReleaseDate = movie.ReleaseDate.Value,
+                    Title = movie.Title
+                });
+            }
+
+            return movies;
         }
+
         public async Task<IEnumerable<Movie>> GetHighestRevenueMovies()
         {
             var movies = await _dbContext.Movies.OrderByDescending(m => m.Revenue).Take(50).ToListAsync();

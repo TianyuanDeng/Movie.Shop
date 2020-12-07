@@ -11,7 +11,7 @@ namespace MovieShop.Core.RepositoryInterfaces
     public interface IMovieRepository : IAsyncRepository<Movie>
     {
         Task<IEnumerable<MovieResponseModel>> GetTopRatedMovies();
-        Task<IEnumerable<Movie>> GetMoviesByGenre(int genreId);
+        Task<IEnumerable<MovieResponseModel>> GetMoviesByGenre(int genreId);
         Task<IEnumerable<Movie>> GetHighestRevenueMovies();
         Task<Movie> GetMovieById(int id);
     }

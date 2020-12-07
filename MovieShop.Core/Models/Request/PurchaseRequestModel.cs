@@ -7,11 +7,10 @@ namespace MovieShop.Core.Models.Request
 {
     public class PurchaseRequestModel
     {
-        [Required]
         public int userId { get; set; }
-        public string purchaseNumber { get; set; }
-        public double totalPrice { get; set; }
-        public DateTime pruchaseDateTime { get; set; }
+        public Guid purchaseNumber { get; set; }
+        public decimal? totalPrice { get; set; }
+        public DateTime purchaseDateTime { get; set; }
         public int movieId { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MovieShop.Core.Models.Request;
+using MovieShop.Core.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,26 +13,48 @@ namespace MovieShop.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        public readonly IUserService _userService;
+
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
         [HttpPost]
         [Route("purchase")]
-        public async Task<IActionResult> PurchaseMovie()
+        public async Task<IActionResult> PurchaseMovie(PurchaseRequestModel purchaseRequest)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                return Ok(purchaseRequest);
+            }
+
+            return BadRequest(new { message = "Please correct the input inforrmation" });
         }
 
         [HttpPost]
         [Route("favorite")]
-        public async Task<IActionResult> favoriteMovie()
+        public async Task<IActionResult> favoriteMovie(FavoriteRequestModel favoriteRequest)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                return Ok(favoriteRequest);
+            }
+
+            return BadRequest(new { message = "Please correct the input inforrmation" });
         }
 
 
         [HttpPost]
         [Route("unfavorite")]
-        public async Task<IActionResult> unfavoriteMovie()
+        public async Task<IActionResult> unfavoriteMovie(FavoriteRequestModel favoriteRequest)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                return Ok(favoriteRequest);
+            }
+
+            return BadRequest(new { message = "Please correct the input inforrmation" });
         }
 
 

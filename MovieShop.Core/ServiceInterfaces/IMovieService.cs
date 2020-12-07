@@ -19,7 +19,7 @@ namespace MovieShop.Core.ServiceInterfaces
         //Task<IEnumerable<ReviewMovieResponseModel>> GetReviewsForMovie(int id);
         //Task<int> GetMoviesCount(string title = "");
         //Task<IEnumerable<MovieResponseModel>> GetHighestGrossingMovies();
-        //Task<IEnumerable<MovieResponseModel>> GetMoviesByGenre(int genreId);
+        Task<IEnumerable<MovieResponseModel>> GetMoviesByGenre(int genreId);
         //Task<MovieDetailsResponseModel> CreateMovie(MovieCreateRequest movieCreateRequest);
         //Task<MovieDetailsResponseModel> UpdateMovie(MovieCreateRequest movieCreateRequest);
     }

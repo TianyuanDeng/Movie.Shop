@@ -5,6 +5,7 @@ using MovieShop.Core.RepositoryInterfaces;
 using MovieShop.Core.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,12 +16,20 @@ namespace MovieShop.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly ICryptoService _cryptoService;
         private readonly IPurchaseRepository _purchaseRepository;
+        private readonly IFavoriteRepository _favoriteRepository;
+        private readonly IReviewRepository _reviewRepository;
+        private readonly IMovieRepository _repository;
 
-        public UserService(IUserRepository userRepository, ICryptoService cryptoService, IPurchaseRepository purchaseRepository)
+        public UserService(IUserRepository userRepository, ICryptoService cryptoService, 
+            IPurchaseRepository purchaseRepository, IFavoriteRepository favoriteRepository ,
+            IReviewRepository reviewRepository, IMovieRepository repository)
         {
             _userRepository = userRepository;
             _cryptoService = cryptoService;
             _purchaseRepository = purchaseRepository;
+            _favoriteRepository = favoriteRepository;
+            _reviewRepository = reviewRepository;
+            _repository = repository;
         }
 
         public async Task<UserLoginResponseModel> ValidateUser(string email, string password)
@@ -104,28 +113,38 @@ namespace MovieShop.Infrastructure.Services
             {
                 UserId = purchaseRequest.userId,
                 PurchaseNumber = purchaseRequest.purchaseNumber,
-                TotalPrice = purchaseRequest.totalPrice,
+                TotalPrice = (decimal)purchaseRequest.totalPrice,
                 PurchaseDateTime = purchaseRequest.purchaseDateTime,
                 MovieId = purchaseRequest.movieId
             };
 
-            //var createdPurchased = await _purchaseRepository.AddAsync(purchased);
-            //Console.WriteLine("Success add purchased movies");
+            var createdPurchased = await _purchaseRepository.AddAsync(purchased);
+            Console.WriteLine("Success add purchased movies");
         }
 
-        public Task AddFavorite(FavoriteRequestModel favoriteRequest)
+        public async Task AddFavorite(FavoriteRequestModel favoriteRequest)
         {
-            throw new NotImplementedException();
+            var favor = new Favorite
+            {
+                MovieId = favoriteRequest.MovieId,
+                UserId = favoriteRequest.UserId
+            };
+
+            var createFavorite = await _favoriteRepository.AddAsync(favor);
         }
 
-        public Task RemoveFavorite(FavoriteRequestModel favoriteRequest)
+        public async Task RemoveFavorite(FavoriteRequestModel favoriteRequest)
         {
-            throw new NotImplementedException();
+            var favorite = await _favoriteRepository.ListAsync(f => f.MovieId == favoriteRequest.MovieId 
+            && f.UserId == favoriteRequest.UserId);
+
+            await _favoriteRepository.DeleteAsync(favorite.First());
         }
 
-        public Task<bool> FavoriteExists(int id, int movieId)
+        public async Task<bool> FavoriteExists(int id, int movieId)
         {
-            throw new NotImplementedException();
+            var res = await _favoriteRepository.GetExistsAsync(f => f.MovieId == movieId && f.UserId == id);
+            return res;
         }
 
         public Task<bool> IsMoviePurchased(PurchaseRequestModel purchaseRequest)
@@ -133,19 +152,50 @@ namespace MovieShop.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task AddMovieReview(ReviewRequestModel reviewRequest)
+        public async Task AddMovieReview(ReviewRequestModel reviewRequest)
         {
-            throw new NotImplementedException();
+            var review = new ReviewRequestModel
+            {
+                userId = reviewRequest.userId,
+                movieId = reviewRequest.movieId,
+                reviewTest = reviewRequest.reviewTest,
+                rating = reviewRequest.rating
+            };
+
+            var rev = new Review
+            {
+                UserId = reviewRequest.userId,
+                MovieId = reviewRequest.movieId,
+                Rating = (decimal?)reviewRequest.rating,
+                ReviewText = reviewRequest.reviewTest
+            };
+
+
+            await _reviewRepository.AddAsync(rev);
         }
 
-        public Task UpdateMovieReview(ReviewRequestModel reviewRequest)
+        public async Task UpdateMovieReview(ReviewRequestModel reviewRequest)
         {
-            throw new NotImplementedException();
+            var rev = new Review
+            {
+                UserId = reviewRequest.userId,
+                MovieId = reviewRequest.movieId,
+                Rating = (decimal?)reviewRequest.rating,
+                ReviewText = reviewRequest.reviewTest
+            };
+
+            await _reviewRepository.UpdateAsync(rev);
         }
 
-        public Task DeleteMovieReview(int userId, int movieId)
+        public async Task DeleteMovieReview(int userId, int movieId)
         {
-            throw new NotImplementedException();
+            var rev = new Review
+            {
+                UserId = userId,
+                MovieId = movieId,
+            };
+
+            await _reviewRepository.DeleteAsync(rev);
         }
     }
 }

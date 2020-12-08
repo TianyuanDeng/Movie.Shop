@@ -8,8 +8,8 @@ namespace MovieShop.Core.Models.Request
     public class FavoriteRequestModel
     {
         [Required]
-        public int userId { get; set; }
+        public int UserId { get; set; }
         [Required]
-        public int movieId { get; set; }
+        public int MovieId { get; set; }
     }
 }

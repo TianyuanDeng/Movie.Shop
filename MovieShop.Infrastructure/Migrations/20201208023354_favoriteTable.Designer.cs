@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieShop.Infrastructure.Data;
 
 namespace MovieShop.Infrastructure.Migrations
 {
     [DbContext(typeof(MovieShopDbContext))]
-    partial class MovieShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201208023354_favoriteTable")]
+    partial class favoriteTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,6 +32,7 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
@@ -41,8 +44,6 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name");
 
                     b.ToTable("Cast");
                 });
@@ -58,6 +59,7 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
@@ -69,8 +71,6 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name");
 
                     b.ToTable("Crew");
                 });
@@ -90,11 +90,6 @@ namespace MovieShop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("MovieId", "UserId")
-                        .IsUnique();
-
                     b.ToTable("Favorite");
                 });
 
@@ -106,9 +101,8 @@ namespace MovieShop.Infrastructure.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
 
                     b.HasKey("Id");
 
@@ -188,25 +182,25 @@ namespace MovieShop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Title");
-
                     b.ToTable("Movie");
                 });
 
             modelBuilder.Entity("MovieShop.Core.Entities.MovieCast", b =>
                 {
-                    b.Property<int>("CastId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CastId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Character")
+                        .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("CastId", "MovieId", "Character");
+                    b.HasKey("MovieId", "CastId");
 
-                    b.HasIndex("MovieId");
+                    b.HasIndex("CastId");
 
                     b.ToTable("MovieCast");
                 });
@@ -220,12 +214,10 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Department")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Job")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("MovieId", "CrewId", "Department", "Job");
 
@@ -259,25 +251,24 @@ namespace MovieShop.Infrastructure.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("PurchaseDateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime?>("PurchaseDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<Guid>("PurchaseNumber")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal?>("TotalPrice")
+                        .IsRequired()
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("UserId", "MovieId")
-                        .IsUnique();
 
                     b.ToTable("Purchase");
                 });
@@ -291,10 +282,10 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Rating")
-                        .HasColumnType("decimal(3,2)");
+                        .IsRequired()
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("ReviewText")
-                        .HasMaxLength(20000)
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MovieId", "UserId");
@@ -302,22 +293,6 @@ namespace MovieShop.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Review");
-                });
-
-            modelBuilder.Entity("MovieShop.Core.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("MovieShop.Core.Entities.Trailer", b =>
@@ -352,11 +327,15 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("AccessFailedCount")
-                        .HasColumnType("int");
+                    b.Property<int>("AccessFailedCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -370,20 +349,24 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
-                    b.Property<bool?>("IsLocked")
+                    b.Property<bool>("IsLocked")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasDefaultValue(true);
 
                     b.Property<DateTime?>("LastLoginDateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("LastName")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
                     b.Property<DateTime?>("LockoutEndDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(16)
@@ -393,50 +376,14 @@ namespace MovieShop.Infrastructure.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
-                    b.Property<bool?>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                    b.Property<bool>("TwoFactorEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
-
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("MovieShop.Core.Entities.UserRole", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRole");
-                });
-
-            modelBuilder.Entity("MovieShop.Core.Entities.Favorite", b =>
-                {
-                    b.HasOne("MovieShop.Core.Entities.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieShop.Core.Entities.User", "User")
-                        .WithMany("Favorites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MovieShop.Core.Entities.MovieCast", b =>
@@ -496,25 +443,6 @@ namespace MovieShop.Infrastructure.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("MovieShop.Core.Entities.Purchase", b =>
-                {
-                    b.HasOne("MovieShop.Core.Entities.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieShop.Core.Entities.User", "User")
-                        .WithMany("Purchases")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MovieShop.Core.Entities.Review", b =>
                 {
                     b.HasOne("MovieShop.Core.Entities.Movie", "Movie")
@@ -545,25 +473,6 @@ namespace MovieShop.Infrastructure.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("MovieShop.Core.Entities.UserRole", b =>
-                {
-                    b.HasOne("MovieShop.Core.Entities.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieShop.Core.Entities.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MovieShop.Core.Entities.Cast", b =>
                 {
                     b.Navigation("MovieCasts");
@@ -592,20 +501,9 @@ namespace MovieShop.Infrastructure.Migrations
                     b.Navigation("Trailers");
                 });
 
-            modelBuilder.Entity("MovieShop.Core.Entities.Role", b =>
-                {
-                    b.Navigation("UserRoles");
-                });
-
             modelBuilder.Entity("MovieShop.Core.Entities.User", b =>
                 {
-                    b.Navigation("Favorites");
-
-                    b.Navigation("Purchases");
-
                     b.Navigation("Reviews");
-
-                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

@@ -26,6 +26,7 @@ namespace MovieShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
+                var p = _userService.PurchaseMovie(purchaseRequest);
                 return Ok(purchaseRequest);
             }
 
@@ -34,10 +35,11 @@ namespace MovieShop.API.Controllers
 
         [HttpPost]
         [Route("favorite")]
-        public async Task<IActionResult> favoriteMovie(FavoriteRequestModel favoriteRequest)
+        public async Task<IActionResult> FavoriteMovie(FavoriteRequestModel favoriteRequest)
         {
             if (ModelState.IsValid)
             {
+                var f = _userService.AddFavorite(favoriteRequest);
                 return Ok(favoriteRequest);
             }
 
@@ -51,6 +53,7 @@ namespace MovieShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
+                await _userService.RemoveFavorite(favoriteRequest);
                 return Ok(favoriteRequest);
             }
 
@@ -59,32 +62,57 @@ namespace MovieShop.API.Controllers
 
 
         [HttpGet]
-        [Route("{id}/movie/{movieId}/faavorite")]
-        public async Task<IActionResult> favoriteOrNot()
+        [Route("{id}/movie/{movieId}/favorite")]
+        public async Task<IActionResult> FavoriteOrNot(int id, int movieId)
         {
-            return Ok();
+       
+            if (await _userService.FavoriteExists(id, movieId))
+            {
+                return Ok("It's favorite movie");
+            }else
+            {
+                return Ok("It's not favorite movie");
+            }
         }
 
 
         [HttpPost]
         [Route("review")]
-        public async Task<IActionResult> reviewMovie()
+        public async Task<IActionResult> AddMovieReview(ReviewRequestModel reviewRequest)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                await _userService.AddMovieReview(reviewRequest);
+                return Ok(reviewRequest);
+            }
+
+            return BadRequest(new { message = "Please correct the input inforrmation" });
         }
 
         [HttpPut]
         [Route("review")]
-        public async Task<IActionResult> updateReview()
+        public async Task<IActionResult> UpdateReview(ReviewRequestModel reviewRequest)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                await _userService.UpdateMovieReview(reviewRequest);
+                return Ok(reviewRequest);
+            }
+
+            return BadRequest(new { message = "Please correct the input inforrmation" });
         }
 
         [HttpDelete]
         [Route("{userId}/movie/{movieId}")]
-        public async Task<IActionResult> deleteMovie()
+        public async Task<IActionResult> DeleteMovie(int userId, int movieId)
         {
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                await _userService.DeleteMovieReview(userId, movieId);
+                return Ok("Successful deleted");
+            }
+
+            return BadRequest(new { message = "Please correct the input inforrmation" });
         }
 
         [HttpGet]

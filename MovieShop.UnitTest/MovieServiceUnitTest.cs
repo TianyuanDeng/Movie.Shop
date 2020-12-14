@@ -30,7 +30,7 @@ namespace MovieShop.UnitTest
         {
             _mockMovieRepository = new Mock<IMovieRepository>();
             // SUT System under Test MovieService => GetTopRevenueMovies
-            _sut = new MovieService(_mockMovieRepository.Object);
+            //_sut = new MovieService(_mockMovieRepository.Object);
             _mockMovieRepository.Setup(m => m.GetHighestRevenueMovies()).ReturnsAsync(_movies);
         }
 

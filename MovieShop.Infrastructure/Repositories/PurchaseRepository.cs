@@ -3,6 +3,7 @@ using MovieShop.Core.RepositoryInterfaces;
 using MovieShop.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,13 @@ namespace MovieShop.Infrastructure.Repositories
         public PurchaseRepository(MovieShopDbContext dbContext) : base(dbContext)
         { 
 
+        }
+
+        public async Task<IEnumerable<Purchase>> GetAllPurchaseById(int id)
+        {
+            var pur = _dbContext.Purchases.Where(p => p.UserId == id).ToList();
+
+            return pur;
         }
 
         public async Task<IEnumerable<Purchase>> GetAllPurchases(int pageSize = 30, int pageIndex = 0)

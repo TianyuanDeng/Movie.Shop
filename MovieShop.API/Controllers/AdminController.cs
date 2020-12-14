@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MovieShop.Core.Models.Request;
+using MovieShop.Core.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +13,19 @@ namespace MovieShop.API.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
+        private readonly IMovieService _movieService;
+
+        public AdminController(IMovieService movieService)
+        {
+            _movieService = movieService;
+        }
+
         [HttpPost]
         [Route("movie")]
-        public async Task<IActionResult> CreatMovie()
+        public async Task<IActionResult> CreatMovie([FromBody] MovieCreateRequest movieCreateRequest)
         {
-            return Ok();
+            var createdMovie = await _movieService.CreateMovie(movieCreateRequest);
+            return CreatedAtRoute("GetMovie", new { id = createdMovie.Id }, createdMovie);
         }
 
         [HttpPut]

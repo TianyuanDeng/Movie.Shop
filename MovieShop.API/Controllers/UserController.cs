@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieShop.Core.Models.Request;
 using MovieShop.Core.ServiceInterfaces;
@@ -75,7 +76,7 @@ namespace MovieShop.API.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPost]
         [Route("review")]
         public async Task<IActionResult> AddMovieReview(ReviewRequestModel reviewRequest)

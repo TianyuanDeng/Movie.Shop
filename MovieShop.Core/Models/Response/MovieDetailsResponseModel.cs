@@ -24,6 +24,7 @@ namespace MovieShop.Core.Models.Response
         public int FavoritesCount { get; set; }
         public List<CastResponseModel> Casts { get; set; }
         public List<Genre> Genres { get; set; }
+
         public class CastResponseModel
         {
             public int Id { get; set; }

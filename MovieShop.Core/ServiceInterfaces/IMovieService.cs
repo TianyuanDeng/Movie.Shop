@@ -1,4 +1,5 @@
-﻿using MovieShop.Core.Models.Response;
+﻿using MovieShop.Core.Models.Request;
+using MovieShop.Core.Models.Response;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,7 +21,7 @@ namespace MovieShop.Core.ServiceInterfaces
         //Task<int> GetMoviesCount(string title = "");
         //Task<IEnumerable<MovieResponseModel>> GetHighestGrossingMovies();
         Task<IEnumerable<MovieResponseModel>> GetMoviesByGenre(int genreId);
-        //Task<MovieDetailsResponseModel> CreateMovie(MovieCreateRequest movieCreateRequest);
+        Task<MovieDetailsResponseModel> CreateMovie(MovieCreateRequest movieCreateRequest);
         //Task<MovieDetailsResponseModel> UpdateMovie(MovieCreateRequest movieCreateRequest);
     }
 }

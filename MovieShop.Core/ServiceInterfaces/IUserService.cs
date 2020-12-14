@@ -18,9 +18,9 @@ namespace MovieShop.Core.ServiceInterfaces
         Task UpdateMovieReview(ReviewRequestModel reviewRequest);
         Task DeleteMovieReview(int userId, int movieId);
 
-        //Task<PurchaseResponseModel> GetAllPurchasesForUser(int id);
-        //Task<ReviewResponseModel> GetAllReviewsByUser(int id);
-        //Task<FavoriteResponseModel> GetAllFavoritesForUser(int id);
+        Task<PurchaseResponseModel> GetAllPurchasesForUser(int id);
+        Task<ReviewResponseModel> GetAllReviewsByUser(int id);
+        Task<FavoriteResponseModel> GetAllFavoritesForUser(int id);
         //Task<User> GetUser(string email);
         //Task<PagedResultSet<User>> GetAllUsersByPagination(int pageSize = 20, int page = 0, string lastName = "");
     }

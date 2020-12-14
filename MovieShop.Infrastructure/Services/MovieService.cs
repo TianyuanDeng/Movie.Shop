@@ -1,4 +1,5 @@
 ﻿using MovieShop.Core.Entities;
+using MovieShop.Core.Models.Request;
 using MovieShop.Core.Models.Response;
 using MovieShop.Core.RepositoryInterfaces;
 using MovieShop.Core.ServiceInterfaces;
@@ -9,15 +10,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MovieShop.Infrastructure.Services
 {
     public class MovieService : IMovieService
     {
         private readonly IMovieRepository _repository;
+        private readonly IAsyncRepository<MovieGenre> _asyncRepository;
 
         //Constructor Injection
         //DI is pattern that enables us to write loosely coupled code so that code is more matinable 
-        public MovieService(IMovieRepository repository)
+        public MovieService(IMovieRepository repository, IAsyncRepository<MovieGenre> asyncRepository)
         {
             // create MovieRepo instance in every method in my service class
             // newing up is very convineint but we need to avoid it as much as we can
@@ -25,6 +28,7 @@ namespace MovieShop.Infrastructure.Services
             // always go back do the regression testing...
             //  _repository = new MovieRepository(new MovieShopDbContext(null));
             _repository = repository;
+            _asyncRepository = asyncRepository;
         }
 
 
@@ -88,6 +92,57 @@ namespace MovieShop.Infrastructure.Services
             var movies = await _repository.GetMoviesByGenre(genreId);
 
             return movies;
+        }
+
+        public async Task<MovieDetailsResponseModel> CreateMovie(MovieCreateRequest movieCreateRequest)
+        {
+            //var movie = new Movie{ 
+            //    Title = movieCreateRequest.Title,
+            //    Overview = movieCreateRequest.Overview,
+            //    Tagline = movieCreateRequest.Tagline,
+            //    Revenue = movieCreateRequest.Revenue,
+            //    Budget = movieCreateRequest.Budget,
+            //    ImdbUrl = movieCreateRequest.ImdbUrl,
+            //    TmdbUrl = movieCreateRequest.TmdbUrl,
+            //    PosterUrl = movieCreateRequest.PosterUrl,
+            //    BackdropUrl = movieCreateRequest.BackdropUrl,
+            //    OriginalLanguage = movieCreateRequest.OriginalLanguage,
+            //    ReleaseDate = movieCreateRequest.ReleaseDate,
+            //    Price = movieCreateRequest.Price
+            //};
+
+            //var createdMovie = await _repository.AddAsync(movie);
+
+            //foreach (var genre in movieCreateRequest.Genres)
+            //{
+            //    var movieGenre = new MovieGenre
+            //    {
+            //        MovieId = createdMovie.Id,
+            //        GenreId = genre.Id
+            //    };
+
+            //    await _asyncRepository.AddAsync(movieGenre);
+            //}
+
+            //var responseModel = new MovieDetailsResponseModel
+            //{
+            //    Title = movieCreateRequest.Title,
+            //    Overview = movieCreateRequest.Overview,
+            //    Tagline = movieCreateRequest.Tagline,
+            //    Revenue = movieCreateRequest.Revenue,
+            //    Budget = movieCreateRequest.Budget,
+            //    ImdbUrl = movieCreateRequest.ImdbUrl,
+            //    TmdbUrl = movieCreateRequest.TmdbUrl,
+            //    PosterUrl = movieCreateRequest.PosterUrl,
+            //    BackdropUrl = movieCreateRequest.BackdropUrl,
+            //    ReleaseDate = movieCreateRequest.ReleaseDate,
+            //    Price = movieCreateRequest.Price,
+            //    Genres = movieCreateRequest.Genres
+            //};
+
+            //return responseModel;
+
+            throw new NotImplementedException();
         }
     }
 }

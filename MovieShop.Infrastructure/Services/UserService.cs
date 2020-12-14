@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MovieShop.Core.Models.Response.PurchaseResponseModel;
 
 namespace MovieShop.Infrastructure.Services
 {
@@ -196,6 +197,35 @@ namespace MovieShop.Infrastructure.Services
             };
 
             await _reviewRepository.DeleteAsync(rev);
+        }
+
+        public async Task<PurchaseResponseModel> GetAllPurchasesForUser(int id)
+        {
+            var res = await _purchaseRepository.GetAllPurchaseById(id);
+            var model = new PurchaseResponseModel();
+
+            var list = new List<PurchasedMovieResponseModel>();
+
+            //foreach (var i in res)
+            //{
+            //    list.Add(new PurchasedMovieResponseModel
+            //    {
+            //        PurchaseDateTime = res.PurchaseDateTime
+            //    }) ;
+            //}
+             
+
+            return model;
+        }
+
+        public Task<ReviewResponseModel> GetAllReviewsByUser(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<FavoriteResponseModel> GetAllFavoritesForUser(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

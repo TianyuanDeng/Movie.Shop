@@ -55,6 +55,7 @@ namespace MovieShop.API
 
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IAsyncRepository<Genre>, EfRepository<Genre>>();
+            services.AddScoped<IAsyncRepository<MovieGenre>, EfRepository<MovieGenre>>();
 
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 
@@ -79,6 +80,13 @@ namespace MovieShop.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MovieShop.API v1"));
             }
+
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins(Configuration.GetValue<string>("clientSPAUrl")).AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
 
             app.UseRouting();
 

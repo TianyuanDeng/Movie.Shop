@@ -5,11 +5,13 @@ using MovieShop.Core.RepositoryInterfaces;
 using MovieShop.Core.ServiceInterfaces;
 using MovieShop.Infrastructure.Data;
 using MovieShop.Infrastructure.Repositories;
+using MovieShop.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-
+using AutoMapper;
+using System.Linq;
 
 namespace MovieShop.Infrastructure.Services
 {
@@ -143,6 +145,50 @@ namespace MovieShop.Infrastructure.Services
             //return responseModel;
 
             throw new NotImplementedException();
+        }
+
+        public async Task<MovieDetailsResponseModel> GetMovieAsync(int id)
+        {
+            var movie = await _repository.GetByIdAsync(id);
+            if (movie == null) throw new NotFoundException("Movie", id);
+
+            var responseModel = new MovieDetailsResponseModel
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Overview = movie.Overview,
+                Tagline = movie.Tagline,
+                Revenue = movie.Revenue,
+                Budget = movie.Budget,
+                ImdbUrl = movie.ImdbUrl,
+                TmdbUrl = movie.TmdbUrl,
+                PosterUrl = movie.PosterUrl,
+                BackdropUrl = movie.BackdropUrl,
+                ReleaseDate = movie.ReleaseDate,
+                Price = movie.Price
+            };
+
+            var movieCast = new List<MovieDetailsResponseModel.CastResponseModel>();
+            foreach (var cast in movie.MovieCasts)
+                movieCast.Add(new MovieDetailsResponseModel.CastResponseModel
+                {
+                    Id = cast.CastId,
+                    Gender = cast.Cast.Gender,
+                    Name = cast.Cast.Name,
+                    ProfilePath = cast.Cast.ProfilePath,
+                    TmdbUrl = cast.Cast.TmdbUrl,
+                    Character = cast.Character
+                });
+
+            var movieGenres = new List<Genre>();
+            foreach (var genre in movie.MovieGenres)
+            {
+                movieGenres.Add(new Genre { Id = genre.GenreId, Name = genre.Genre.Name });
+            }
+
+            responseModel.Genres = movieGenres;
+            responseModel.Casts = movieCast;
+            return responseModel;
         }
     }
 }

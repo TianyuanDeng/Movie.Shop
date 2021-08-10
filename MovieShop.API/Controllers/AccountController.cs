@@ -35,11 +35,14 @@ namespace MovieShop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                return Ok(userRegisterRequestModel);
+                var createdUser = await _userService.CreateUser(userRegisterRequestModel);
+                //return CreatedAtRoute(nameof(GetUserById), new { id = createdUser.Id }, null);
+                return Ok(createdUser);
             }
 
             return BadRequest(new { message = "Please correct the input inforrmation" });
         }
+
 
         [HttpPost]
         [Route("login")]
@@ -77,6 +80,9 @@ namespace MovieShop.API.Controllers
                      new Claim( JwtRegisteredClaimNames.FamilyName, userLoginResponseModel.LastName ),
                      new Claim( JwtRegisteredClaimNames.Email, userLoginResponseModel.Email )
             };
+
+            if (userLoginResponseModel.Roles != null) claims.AddRange(userLoginResponseModel.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
             var identityClaims = new ClaimsIdentity();
             identityClaims.AddClaims(claims);
 

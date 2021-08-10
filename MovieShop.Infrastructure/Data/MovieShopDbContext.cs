@@ -14,9 +14,6 @@ namespace MovieShop.Infrastructure.Data
         
         }
 
-        //Cause OnModelCreating is private so we need override it
-        //Func<int, int, string> last parmate should be return type,  --> string mymethod(int, int)
-        //if we have action(int, int) that will not work, should be void mr(int, int)
         /*Very Important*/
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }
@@ -32,6 +29,10 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
+
+        //Cause OnModelCreating is protected so we need override it
+        //Func<int, int, string> last parmate should be return type,  --> string mymethod(int, int)
+        //if we have action(int, int) that will not work, should be void mr(int, int)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Genre>(ConfigureGenre);

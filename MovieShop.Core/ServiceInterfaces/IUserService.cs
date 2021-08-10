@@ -1,4 +1,5 @@
-﻿using MovieShop.Core.Models.Request;
+﻿using MovieShop.Core.Entities;
+using MovieShop.Core.Models.Request;
 using MovieShop.Core.Models.Response;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace MovieShop.Core.ServiceInterfaces
         Task<PurchaseResponseModel> GetAllPurchasesForUser(int id);
         Task<ReviewResponseModel> GetAllReviewsByUser(int id);
         Task<FavoriteResponseModel> GetAllFavoritesForUser(int id);
-        //Task<User> GetUser(string email);
+        Task<User> GetUser(string email);
         //Task<PagedResultSet<User>> GetAllUsersByPagination(int pageSize = 20, int page = 0, string lastName = "");
     }
 }

@@ -16,7 +16,7 @@ namespace MovieShop.Core.ServiceInterfaces
         //Task<PagedResultSet<MovieResponseModel>> GetMoviesByPagination(int pageSize = 20, int page = 0, string title = "");
         //Task<PagedResultSet<MovieResponseModel>> GetAllMoviePurchasesByPagination(int pageSize = 20, int page = 0);
         //Task<PaginatedList<MovieResponseModel>> GetAllPurchasesByMovieId(int movieId);
-        //Task<MovieDetailsResponseModel> GetMovieAsync(int id);
+        Task<MovieDetailsResponseModel> GetMovieAsync(int id);
         //Task<IEnumerable<ReviewMovieResponseModel>> GetReviewsForMovie(int id);
         //Task<int> GetMoviesCount(string title = "");
         //Task<IEnumerable<MovieResponseModel>> GetHighestGrossingMovies();

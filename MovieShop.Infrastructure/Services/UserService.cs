@@ -227,5 +227,10 @@ namespace MovieShop.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<User> GetUser(string email)
+        {
+            return await _userRepository.GetUserByEmail(email);
+        }
     }
 }

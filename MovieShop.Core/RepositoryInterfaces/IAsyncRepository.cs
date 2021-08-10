@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace MovieShop.Core.RepositoryInterfaces
 {
     //interview question generic constraints 
-    public interface IAsyncRepository<T> where T : class //The type argument must be a reference type;(class, interface, delegat, or array type)
+    public interface IAsyncRepository<T> where T : class 
+        //The type argument must be a reference type;(class, interface, delegat, or array type)
     {
         //CRUD operations, which are common across all the repositories
         //Get an Entity by Id => movieid => Movie

@@ -36,7 +36,7 @@ namespace MovieShop.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> FindMovieById(int id)
         {
-            var movie = await _movieService.GetMoveById(id);
+            var movie = await _movieService.GetMovieAsync(id);
 
             if (movie == null)
             {
